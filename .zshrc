@@ -4,7 +4,12 @@ autoload -Uz compinit && compinit
 # Case insensitive.
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
 
+# Environment
 EDITOR="vim"
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=5000
+SAVEHIST=5000
+
 # Prompt
 # PS1="%{$fg[blue]%}%n%{$reset_color%}@%{$fg[blue]%}%m %{$fg[yellow]%}%~ %{$reset_color%}%% "
 # minimal prompt
@@ -14,6 +19,7 @@ PS1="%{$fg[yellow]%}%~ %{$fg[red]%}% > %{$reset_color%}% "
 
 # Git aliases
 alias gs='git status'
+alias gd='git diff'
 alias ga='git add'
 alias gaa='git add -A'
 alias gr='git restore --staged'

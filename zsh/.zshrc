@@ -29,7 +29,8 @@ alias gpush='git push'
 alias gcmsg='git commit -am'
 alias gl='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 # Base aliases
-alias ls='ls -lah'
+alias ls='ls -a --color=auto'
+alias ll='ls -ahl --color=auto'
 alias tmp='cd /tmp'
 
 # Exec bash in docker container

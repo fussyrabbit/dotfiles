@@ -58,3 +58,5 @@ function certconnect() {
  echo -n | openssl s_client -connect "$1":"$2" -servername "$1" 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -text -noout
  return 0
 }
+
+[[ -f ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh

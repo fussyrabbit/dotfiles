@@ -1,21 +1,7 @@
-# Completions.
 autoload -U colors && colors
-autoload -Uz compinit && compinit
-# Case insensitive.
-zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
 
-# Environment
-EDITOR="vim"
-HISTFILE="$HOME/.zsh_history"
-HISTSIZE=5000
-SAVEHIST=5000
-
-# Prompt
-# PS1="%{$fg[blue]%}%n%{$reset_color%}@%{$fg[blue]%}%m %{$fg[yellow]%}%~ %{$reset_color%}%% "
-# minimal prompt
-PS1="%{$fg[yellow]%}%~ %{$fg[red]%}% > %{$reset_color%}% "
-# super minimal prompt
-# PS1="%{$fg[red]%}% > %{$reset_color%}% "
+eval $(ssh-agent -s)
+eval "$(starship init zsh)"
 
 # Git aliases
 alias gs='git status'
@@ -32,6 +18,12 @@ alias gl='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %
 alias ls='ls -a --color=auto'
 alias ll='ls -ahl --color=auto'
 alias tmp='cd /tmp'
+
+# Environment
+EDITOR="vim"
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=5000
+SAVEHIST=5000
 
 # Exec bash in docker container
 function dexec() {
@@ -66,4 +58,3 @@ function certconnect() {
  echo -n | openssl s_client -connect "$1":"$2" -servername "$1" 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -text -noout
  return 0
 }
-

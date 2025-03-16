@@ -3,7 +3,7 @@
 
 # Set to superior editing mode
 
-set -o vi
+# set -o vi
 
 export VISUAL="nvim"
 export EDITOR="nvim"

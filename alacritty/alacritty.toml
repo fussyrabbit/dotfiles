@@ -1,0 +1,17 @@
+[font]
+size = 18
+normal = { family = "JetBrainsMono Nerd Font" }
+
+[window]
+padding = { x = 5, y = 5 }
+dynamic_padding = true
+
+[general]
+import = [
+    "~/.config/alacritty/gruvbox_material_hard_dark.toml"
+]
+
+[terminal]
+
+[terminal.shell]
+program = "/opt/homebrew/bin/tmux"

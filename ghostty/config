@@ -1,5 +1,0 @@
-font-family = "JetBrainsMono Nerd Font"
-font-size = 16
-theme = "gruvbox-material"
-command = "/opt/homebrew/bin/tmux"
-title = ""

@@ -1,4 +1,4 @@
-alacritty
+ghostty
 fzf
 font-jetbrains-mono-nerd-font
 tmux

@@ -12,7 +12,7 @@ dotfiles=(
   ".zshrc:$HOME/.zshrc"
   ".gitconfig:$HOME/.gitconfig"
   "nvim:$home_config_directory/nvim"
-  "alacritty:$home_config_directory/alacritty"
+  "ghostty:$home_config_directory/ghostty"
 )
 
 usage() {

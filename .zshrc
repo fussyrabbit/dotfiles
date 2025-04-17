@@ -86,6 +86,7 @@ alias dot="cd $DOTFILES"
 alias repos="cd $REPOS"
 alias work="cd $WORK/cloud"
 alias notes="cd $NOTES"
+alias projects="cd $PROJECTS"
 
 # ~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~
 

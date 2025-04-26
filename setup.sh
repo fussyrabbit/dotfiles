@@ -11,8 +11,7 @@ dotfiles=(
   ".tmux.conf:$HOME/.tmux.conf"
   ".zshrc:$HOME/.zshrc"
   ".gitconfig:$HOME/.gitconfig"
-  "nvim:$home_config_directory/nvim"
-  "ghostty:$home_config_directory/ghostty"
+  ".config:$home_config_directory"
 )
 
 usage() {

@@ -50,6 +50,8 @@ alias v="nvim"
 alias tmp="cd /tmp"
 alias c="clear"
 alias e="exit"
+alias lg="lazygit"
+alias g="git"
 alias reload-zsh="source ~/.zshrc"
 
 # Git

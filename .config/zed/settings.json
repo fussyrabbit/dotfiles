@@ -7,8 +7,8 @@
   "buffer_font_family": "JetBrainsMono Nerd Font",
   "theme": {
     "mode": "system",
-    "light": "Gruvbox Light Hard",
-    "dark": "Gruvbox Dark Hard"
+    "light": "Rosé Pine Dawn",
+    "dark": "Rosé Pine"
   },
   "format_on_save": "off",
   "telemetry": {

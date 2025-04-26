@@ -57,13 +57,6 @@ Alternatively, you can execute the Bash script directly:
 ./setup.sh prompt-delete     # Remove Pure prompt
 ```
 
-## File Structure
-
-- `setup.sh`: Main Bash script for managing dotfiles, Brew packages, and Pure prompt.
-- `Makefile`: Provides shortcuts for running `setup.sh` commands.
-- `brew_packages.txt`: List of Homebrew packages to install.
-- `ghostty`, `tmux.conf`, `zshrc`, `gitconfig`, `nvim`: Dotfiles managed by the script.
-
 ## Backup & Restore
 
 - `make backup` or `./setup.sh dotfiles-backup` saves a copy of existing dotfiles in `~/.backup`.
@@ -71,4 +64,4 @@ Alternatively, you can execute the Bash script directly:
 
 ## License
 
-This project is licensed under the MIT License.
+Apache 2.0

@@ -1,0 +1,6 @@
+ghostty
+fzf
+font-jetbrains-mono-nerd-font
+tmux
+ripgrep
+nvim

@@ -1,0 +1,9 @@
+[user]
+	name = Viktor Baranov
+	email = baranov71viktor@gmail.com
+[core]
+  editor = nvim
+[pull]
+  rebase = true
+[push]
+  autoSetupRemote = true

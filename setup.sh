@@ -43,11 +43,14 @@ manage_prompt() {
 }
 
 manage_dotfiles() {
+  local local_bin="$HOME/.local/bin"
+  PATH="$local_bin:$PATH"
   if ! command -v chezmoi >/dev/null 2>&1; then
     echo "chezmoi is not installed. Installing..."
     tmpfile=$(mktemp)
     curl -fsSL https://raw.githubusercontent.com/twpayne/chezmoi/master/assets/scripts/install.sh -o "$tmpfile"
-    bash "$tmpfile" -b /usr/local/bin
+    mkdir -p "$local_bin"
+    bash "$tmpfile" -b "$local_bin"
     rm -f "$tmpfile"
     command -v chezmoi >/dev/null 2>&1 || {
       echo "failed to install chezmoi"
@@ -60,7 +63,7 @@ manage_dotfiles() {
     chezmoi apply --source="$PWD"
     ;;
   esac
-  }
+}
 
 [[ -z $1 ]] && usage
 

@@ -6,7 +6,7 @@ This repository automates the installation and management of dotfiles, Homebrew 
 
 - Install and delete Homebrew packages.
 - Install and delete the Pure prompt.
-- Manage dotfiles with [Chezmoi](https://www.chezmoi.io/) (auto-installed if missing).
+- Manage dotfiles with [Chezmoi](https://www.chezmoi.io/) (auto-installed to `~/.local/bin` if missing).
 - Automate everything with `make` commands.
 
 ## Installation
@@ -51,7 +51,7 @@ Alternatively, you can execute the Bash script directly:
 ./setup.sh prompt-delete     # Remove Pure prompt
 ```
 
-`setup.sh` automatically installs Chezmoi if it's not already available.
+`setup.sh` automatically installs Chezmoi to `~/.local/bin` if it's not already available. Ensure this directory is in your `PATH`.
 
 ## License
 

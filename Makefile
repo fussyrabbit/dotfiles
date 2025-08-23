@@ -23,28 +23,13 @@ packages-delete:
 prompt-delete:
 	./setup.sh prompt-delete
 
-## Delete dotfiles
-.PHONY: dotfiles-delete
-dotfiles-delete:
-	./setup.sh dotfiles-delete
-
 ## Install brew packages, pure prompt and dotfiles
 .PHONY: install
 install: packages-install prompt-install dotfiles-install
 
-## Delete brew packages, pure prompt and dotfiles
+## Delete brew packages and pure prompt
 .PHONY: delete
-delete: packages-delete prompt-delete dotfiles-delete
-
-## Backup existing dotfiles
-.PHONY: backup
-backup: 
-	./setup.sh dotfiles-backup
-
-## Restore dotfiles from backup
-.PHONY: restore
-restore: 
-	./setup.sh dotfiles-restore
+delete: packages-delete prompt-delete
 
 # Help documentation https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

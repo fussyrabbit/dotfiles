@@ -1,22 +1,14 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
 # set -x # Uncomment for debugging
 
 brew_packages_file="brew_packages.txt"
 prompt_directory="$HOME/.zsh/pure"
-home_config_directory="$HOME/.config"
-backup_dir="$HOME/.backup"
-
-dotfiles=(
-  ".tmux.conf:$HOME/.tmux.conf"
-  ".zshrc:$HOME/.zshrc"
-  ".gitconfig:$HOME/.gitconfig"
-  ".config:$home_config_directory"
-)
 
 usage() {
   echo "Usage: $0 <action>"
-  echo "Available actions: dotfiles-install, dotfiles-delete, dotfiles-backup, dotfiles-restore, brew-install, brew-delete, prompt-install, prompt-delete"
+  echo "Available actions: dotfiles-install, brew-install, brew-delete, prompt-install, prompt-delete"
   exit 1
 }
 
@@ -50,60 +42,31 @@ manage_prompt() {
   esac
 }
 
-manage_symlinks() {
-  local action=$1
-  for file in "${dotfiles[@]}"; do
-    IFS=':' read -r source target <<<"$file"
+manage_dotfiles() {
+  if ! command -v chezmoi >/dev/null 2>&1; then
+    echo "chezmoi is not installed. Installing..."
+    tmpfile=$(mktemp)
+    curl -fsSL https://raw.githubusercontent.com/twpayne/chezmoi/master/assets/scripts/install.sh -o "$tmpfile"
+    bash "$tmpfile" -b /usr/local/bin
+    rm -f "$tmpfile"
+    command -v chezmoi >/dev/null 2>&1 || {
+      echo "failed to install chezmoi"
+      exit 1
+    }
+  fi
 
-    local source_file="$PWD/$source"
-    local target_file="$target"
-    local backup_file="$backup_dir/$source"
-
-    case $action in
-    dotfiles-install)
-      if [[ -L "$target_file" ]]; then
-        echo "Symlink already exists: $target_file -> $(readlink "$target_file")"
-      elif [[ -e "$target_file" ]]; then
-        echo "File already exists (not symlink): $target_file"
-      else
-        ln -s "$source_file" "$target_file"
-        echo "Created symlink: $source_file -> $target_file"
-      fi
-      ;;
-    dotfiles-delete)
-      if [[ -L "$target_file" ]]; then
-        rm "$target_file"
-        echo "Deleted symlink: $target_file"
-      elif [[ -e "$target_file" ]]; then
-        echo "File exists but is not a symlink: $target_file (skipping)"
-      else
-        echo "File does not exist: $target_file (skipping)"
-      fi
-      ;;
-    dotfiles-backup)
-      mkdir -p "$backup_dir"
-      if [[ -e "$target_file" && ! -e "$backup_file" ]]; then
-        cp -r "$target_file" "$backup_file"
-        echo "Backed up: $backup_file"
-      fi
-      ;;
-    dotfiles-restore)
-      if [[ -e "$backup_file" ]]; then
-        cp "$backup_file" "$target_file"
-        echo "Restored: $target_file"
-      else
-        echo "Backup not found for: $target_file"
-      fi
-      ;;
-    esac
-  done
-}
+  case $1 in
+  dotfiles-install)
+    chezmoi apply --source="$PWD"
+    ;;
+  esac
+  }
 
 [[ -z $1 ]] && usage
 
 case "$1" in
-dotfiles-install | dotfiles-delete | dotfiles-backup | dotfiles-restore)
-  manage_symlinks "$1"
+dotfiles-install)
+  manage_dotfiles "$1"
   ;;
 brew-install)
   install_brew_packages

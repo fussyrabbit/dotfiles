@@ -1,12 +1,12 @@
 # Dotfiles
 
-This repository automates the installation and management of dotfiles, Homebrew packages, and the Pure prompt using Bash scripts and a Makefile.
+This repository automates the installation and management of dotfiles, Homebrew packages, and the Pure prompt using Bash scripts, Chezmoi, and a Makefile.
 
 ## Features
 
 - Install and delete Homebrew packages.
 - Install and delete the Pure prompt.
-- Create, backup, restore, and delete symbolic links for dotfiles.
+- Manage dotfiles with [Chezmoi](https://www.chezmoi.io/) (auto-installed if missing).
 - Automate everything with `make` commands.
 
 ## Installation
@@ -26,9 +26,7 @@ You can use the Makefile to run common tasks:
 
 ```sh
 make install       # Install Homebrew packages, Pure prompt, and dotfiles
-make delete        # Remove everything
-make backup        # Backup existing dotfiles
-make restore       # Restore dotfiles from backup
+make delete        # Remove Homebrew packages and Pure prompt
 ```
 
 For specific tasks:
@@ -38,8 +36,7 @@ make packages-install  # Install Homebrew packages
 make packages-delete   # Uninstall Homebrew packages
 make prompt-install    # Install Pure prompt
 make prompt-delete     # Remove Pure prompt
-make dotfiles-install  # Install dotfiles
-make dotfiles-delete   # Remove dotfiles
+make dotfiles-install  # Install dotfiles via Chezmoi
 ```
 
 ### Using `setup.sh`
@@ -47,20 +44,14 @@ make dotfiles-delete   # Remove dotfiles
 Alternatively, you can execute the Bash script directly:
 
 ```sh
-./setup.sh dotfiles-install  # Install dotfiles
-./setup.sh dotfiles-delete   # Remove dotfiles
-./setup.sh dotfiles-backup   # Backup existing dotfiles
-./setup.sh dotfiles-restore  # Restore dotfiles from backup
+./setup.sh dotfiles-install  # Apply dotfiles with Chezmoi
 ./setup.sh brew-install      # Install Homebrew packages
 ./setup.sh brew-delete       # Uninstall Homebrew packages
 ./setup.sh prompt-install    # Install Pure prompt
 ./setup.sh prompt-delete     # Remove Pure prompt
 ```
 
-## Backup & Restore
-
-- `make backup` or `./setup.sh dotfiles-backup` saves a copy of existing dotfiles in `~/.backup`.
-- `make restore` or `./setup.sh dotfiles-restore` restores backed-up dotfiles.
+`setup.sh` automatically installs Chezmoi if it's not already available.
 
 ## License
 

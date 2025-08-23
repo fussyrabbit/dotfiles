@@ -52,7 +52,8 @@ manage_dotfiles() {
     mkdir -p "$local_bin"
     bash "$tmpfile" -b "$local_bin"
     rm -f "$tmpfile"
-    command -v chezmoi >/dev/null 2>&1 || {
+    hash -r
+    [[ -x "$local_bin/chezmoi" ]] || {
       echo "failed to install chezmoi"
       exit 1
     }
@@ -60,7 +61,7 @@ manage_dotfiles() {
 
   case $1 in
   dotfiles-install)
-    chezmoi apply --source="$PWD"
+    "$local_bin/chezmoi" apply --source="$PWD"
     ;;
   esac
 }

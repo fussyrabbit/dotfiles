@@ -1,0 +1,14 @@
+[user]
+	name = {{ .git.name }}
+  email = {{ .git.personal_email }} 
+[core]
+  editor = nvim
+[pull]
+  rebase = true
+[push]
+  autoSetupRemote = true
+
+{{- if .git.work_dir }}
+[includeIf "gitdir:{{ .git.work_dir }}/"]
+  path = ~/.gitconfig-work
+{{- end }}

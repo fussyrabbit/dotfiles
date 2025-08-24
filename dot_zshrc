@@ -1,61 +1,61 @@
 # ~~~~~~~~~~~~~~~ Environment ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-# Set to superior editing mode
-
 set -o vi
 
 export VISUAL="nvim"
 export EDITOR="nvim"
+export PAGER="less"
+export LESS='-R --use-color -Dd+r$ -Du+b$'
 
+# Paths (use arrays; dedupe)
+typeset -U path fpath
+path=($HOME/.local/bin $path)
+if (( $+commands[brew] )); then
+  # Homebrew-provided bins (macOS)
+  nodebin="$(brew --prefix node 2>/dev/null)/bin"
+  [[ -d $nodebin ]] && path=($nodebin $path)
+fi
+export PATH
 
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-HISTFILE=~/.zsh_history
+HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
 SAVEHIST=100000
 
-setopt HIST_IGNORE_SPACE  # Don"t save when prefixed with space
-setopt HIST_IGNORE_DUPS   # Don"t save duplicate lines
-setopt SHARE_HISTORY      # Share history between sessions
+setopt EXTENDED_HISTORY        # timestamps etc.
+setopt APPEND_HISTORY          # don't clobber on exit
+setopt INC_APPEND_HISTORY_TIME # write as commands run (with time)
+setopt HIST_IGNORE_SPACE       # ignore lines starting with space
+setopt HIST_IGNORE_ALL_DUPS    # keep last entry for a dup
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
+setopt SHARE_HISTORY           # merge across sessions (chatty but handy)
 
+# ~~~~~~~~~~~~~~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~
+export WORK="$HOME/work"
+export PROJECTS="$HOME/project"
+export HOMELAB="$PROJECTS/homelab"
+export REPOS="$PROJECTS/repos"
+export DOTFILES="$PROJECTS/repos/dotfiles"
+export NOTES="$HOME/Documents/Obsidian"
 
-# ~~~~~~~~~~~~~~~ Directory ~~~~~~~~~~~~~~~~~~~~~~~~
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT
 
-
-fpath+=(/opt/homebrew/Cellar/node/23.7.0/bin/node)
-
-export WORK="${HOME}/work"
-export PROJECTS="${HOME}/project"
-export HOMELAB="${PROJECTS}/homelab"
-export REPOS="${PROJECTS}/repos"
-export DOTFILES="${PROJECTS}/repos/dotfiles"
-export NOTES="${HOME}/Documents/Obsidian"
-
-
-# ~~~~~~~~~~~~~~~ Prompt ~~~~~~~~~~~~~~~~~~~~~~~~
-
-PURE_GIT_PULL=0
-
+# ~~~~~~~~~~~~~~~ Prompt (pure) ~~~~~~~~~~~~~~~~~~~~~~
 fpath+=($HOME/.zsh/pure)
 autoload -U promptinit; promptinit
 prompt pure
+zstyle ':prompt:pure:git:branch' max-length 28
+zstyle ':prompt:pure:git:fetch'  false
 
-
-# ~~~~~~~~~~~~~~~ Aliases ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
+# ~~~~~~~~~~~~~~~ Aliases ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 alias v="nvim"
 alias tmp="cd /tmp"
 alias c="clear"
 alias e="exit"
-alias lg="lazygit"
 alias g="git"
 alias reload-zsh="source ~/.zshrc"
 
 # Git
-
 alias gst="git status"
 alias gd="git diff"
 alias ga="git add"
@@ -66,13 +66,20 @@ alias gp="git push"
 alias gcmsg="git commit -am"
 alias gl='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
-# ls 
-
-alias ls="ls --color=auto"
-alias la="ls -lathr"
+# ls (macOS vs Linux, prefer eza if present)
+if (( $+commands[eza] )); then
+  alias ls='eza'
+  alias la='eza -lah'
+else
+  if [[ "$OSTYPE" == darwin* ]]; then
+    alias ls='ls -G'
+  else
+    alias ls='ls --color=auto'
+  fi
+  alias la='ls -lAh'
+fi
 
 # Kubernetes
-
 alias k="kubectl"
 alias kc="kubectx"
 alias kn="kubens"
@@ -81,8 +88,7 @@ alias kgp="kubectl get pods"
 alias f="flux"
 alias t="talosctl"
 
-# Directory
-
+# Directory jumps
 alias lab="cd $HOMELAB"
 alias dot="cd $DOTFILES"
 alias repos="cd $REPOS"
@@ -90,73 +96,60 @@ alias work="cd $WORK/cloud"
 alias notes="cd $NOTES"
 alias projects="cd $PROJECTS"
 
-# ~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkcd() { mkdir -p -- "$1" && cd -- "$1"; }
 
-
-# Exec bash in docker container
-function dexec() {
- if [[ ! "$1" ]] ; then
-     echo "You must supply a container ID or name."
-     return 0
- fi
-
- docker exec -it $1 bash
- return 0
+# Show certificate data from a PEM file
+certdata() {
+  [[ -z "$1" ]] && { echo "specify certificate path (PEM)"; return 1; }
+  openssl x509 -in "$1" -text -noout
 }
 
-# Show certificate data
-function certdata() {
- if [[ ! "$1" ]] ; then
-     echo "You must specify cerificate in PEM format"
-     return 0
- fi
- openssl x509 -in "$1" -text -noout
- return 0
+# Connect to host:port and show peer cert (default 443)
+certconnect() {
+  [[ -z "$1" ]] && { echo "usage: certconnect <host> [port]"; return 1; }
+  local port="${2:-443}"
+  openssl s_client -servername "$1" -connect "$1:$port" -showcerts </dev/null 2>/dev/null \
+    | sed -n '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' \
+    | openssl x509 -text -noout
 }
-
-# Connect to host and show certificate information
-function certconnect() {
- if [[ ! "$1" ]] ; then
-     echo "You must specify hostname for SSL checking"
-     return 0
- elif [[ ! "$2" ]] ; then
-     echo "You must specify port for connect"
-     return 0
- fi
- echo -n | openssl s_client -connect "$1":"$2" -servername "$1" 2>&1 | sed -ne "/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p" | openssl x509 -text -noout
- return 0
-}
-
 
 # ~~~~~~~~~~~~~~~ Completions ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-if [[ ! -d ~/.zsh/func ]]; then
-  mkdir -p ~/.zsh/func
+# Keep your own completion dir, add brew’s, run compinit once.
+mkdir -p ~/.zsh/func
+fpath=(~/.zsh/func $fpath)
+if (( $+commands[brew] )); then
+  fpath=($(brew --prefix)/share/zsh/site-functions $(brew --prefix)/share/zsh-completions $fpath)
 fi
-
-fpath+=~/.zsh/func
-
-if type brew &>/dev/null; then
-    FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-fi
-
 autoload -Uz compinit
-compinit -u
-
+compinit -i
+zmodload zsh/complist
 zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' 'r:|[._-]=** r:|=**'
 
-completion_tools=("talosctl" "oc" "flux")
+# (Re)generate tool completions only if missing or stale
+_ensure_completion() {
+  local tool="$1" gen="$2" file="$HOME/.zsh/func/_$tool"
+  (( $+commands[$tool] )) || return
+  [[ -s $file && $file -nt ${commands[$tool]} ]] && return
+  eval "$gen" >| "$file" 2>/dev/null
+}
+_ensure_completion talosctl 'talosctl completion zsh'
+_ensure_completion oc       'oc completion zsh'
+_ensure_completion flux     'flux completion zsh'
+_ensure_completion chezmoi  'chezmoi completion zsh'
+# rbw uses a different subcommand:
+if (( $+commands[rbw] )); then
+  file="$HOME/.zsh/func/_rbw"
+  [[ -s $file ]] || rbw gen-completions zsh >| "$file" 2>/dev/null
+fi
 
-for tool in "${completion_tools[@]}"; do
-  "$tool" completion zsh > ~/.zsh/func/_$tool
-done
+# ~~~~~~~~~~~~~~~ FZF (guarded) ~~~~~~~~~~~~~~~~~~~~~~
+if (( $+commands[fzf] )); then
+  source <(fzf --zsh)
+  (( $+commands[fd] )) && export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+fi
 
-
-# ~~~~~~~~~~~~~~~ Misc ~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-source ~/.privaterc
-
-source <(fzf --zsh)
-autoload -Uz compinit && compinit
+# ~~~~~~~~~~~~~~~ Misc includes (guarded) ~~~~~~~~~~~~
+[[ -r $HOME/.zshrc.secrets ]] && source $HOME/.zshrc.secrets
+[[ -r $HOME/.zshrc.work    ]] && source $HOME/.zshrc.work

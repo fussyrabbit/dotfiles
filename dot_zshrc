@@ -32,10 +32,10 @@ setopt SHARE_HISTORY           # merge across sessions (chatty but handy)
 
 # ~~~~~~~~~~~~~~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~
 export WORK="$HOME/work"
-export PROJECTS="$HOME/project"
-export HOMELAB="$PROJECTS/homelab"
-export REPOS="$PROJECTS/repos"
-export DOTFILES="$PROJECTS/repos/dotfiles"
+export PROJECTS="$HOME/projects"
+export HOMELAB="$PROJECTS/github/homelab"
+export REPOS="$PROJECTS/github"
+export DOTFILES="$PROJECTS/github/dotfiles"
 export NOTES="$HOME/Documents/Obsidian"
 
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT

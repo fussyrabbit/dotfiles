@@ -41,6 +41,10 @@ export NOTES="$HOME/Documents/Obsidian"
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT
 
 # ~~~~~~~~~~~~~~~ Prompt (pure) ~~~~~~~~~~~~~~~~~~~~~~
+if [[ ! -d $HOME/.zsh/pure ]]; then
+  git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure" 2>/dev/null
+fi
+
 fpath+=($HOME/.zsh/pure)
 autoload -U promptinit; promptinit
 prompt pure
